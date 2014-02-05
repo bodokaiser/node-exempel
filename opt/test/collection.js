@@ -17,13 +17,18 @@ module.exports = function(exempel) {
         chai.expect(collection.models).to.be.an('array');
       });
 
+      it('should set length to zero', function() {
+        var collection = new Collection();
+
+        chai.expect(collection.length).to.equal(0);
+      });
+
       it('should set models to source', function() {
         var collection = new Collection([
           { baz: { foo: 'bar' } }
         ]);
 
-        chai.expect(collection.models).to.be.not.empty;
-        chai.expect(collection.models).to.be.an('array');
+        chai.expect(collection).to.have.length(1);
         chai.expect(collection.models).to.have.length(1);
         chai.expect(collection.models[0]).to.be.an.instanceOf(Model);
       });
@@ -96,6 +101,19 @@ module.exports = function(exempel) {
         collection.push(model).once('change', done).remove(model);
       });
 
+      it('should be emitted on model "change"', function(done) {
+        var model = new Model();
+        var collection = new Collection();
+
+        collection.push(model).once('change', function(model2) {
+          chai.expect(model).to.equal(model2);
+
+          done();
+        });
+
+        model.set('foo', 'bar');
+      });
+
     });
 
     describe('#at(index)', function() {
@@ -165,9 +183,16 @@ module.exports = function(exempel) {
 
       it('should push model to models', function() {
         var model = new Model({ foo: 'bar' });
-        var collection = new Collection();
+        var collection = new Collection().push(model);
 
-        chai.expect(collection.push(model).at(0)).to.equal(model);
+        chai.expect(collection.at(0)).to.equal(model);
+      });
+
+      it('should increase length by 1', function() {
+        var model = new Model({ foo: 'bar' });
+        var collection = new Collection().push(model);
+
+        chai.expect(collection).to.have.length(1);
       });
 
     });
@@ -190,6 +215,16 @@ module.exports = function(exempel) {
         var model = collection.at(0);
 
         chai.expect(collection.remove(model).models).to.be.empty;
+      });
+
+      it('should decrease length by 1', function() {
+        var model1 = new Model({ foo: 'bar' });
+        var model2 = new Model({ foo: 'baz' });
+        var collection = new Collection();
+
+        collection.push(model1).push(model2).remove(model1);
+
+        chai.expect(collection).to.have.length(1);
       });
 
     });

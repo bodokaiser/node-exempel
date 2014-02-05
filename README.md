@@ -176,6 +176,12 @@ collection.on('change', function() {
 });
 ```
 
+Also "change" will be emitted when a model in the collection changes.
+
+#### collection.length
+
+Shortcut to `collection.models.length`.
+
 #### collection.at(index)
 
 Returns model beeing at index of `collection.models`.
