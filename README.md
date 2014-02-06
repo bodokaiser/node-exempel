@@ -91,7 +91,23 @@ Returns value behind property `key`.
 
 #### model.set(source)
 
-Merges `source` onto `model.attributes`.
+Merges `source` onto `model.attributes`. Also supports nested properties
+which can be useful on parsing form data:
+
+```
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  // loop through each input field
+  [].forEach.call(form.children, function(input) {
+    // transforms "address-street" to object
+    // compatible "address.street" notation
+    var key = input.name.split('-').join('.');
+
+    model.set(key, input.value);
+  });
+});
+```
 
 #### model.set(key, value)
 

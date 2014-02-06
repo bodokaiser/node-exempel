@@ -108,10 +108,16 @@ module.exports = function(exempel) {
         chai.expect(model.get('foo')).to.be.undefined;
       });
 
-      it('should return attribute property key', function() {
+      it('should return attribute property', function() {
         var model = new Model({ foo: 'bar' });
 
         chai.expect(model.get('foo')).to.equal('bar');
+      });
+
+      it('should return nested attribute property', function() {
+        var model = new Model({ foo: { bar: 'baz' } });
+
+        chai.expect(model.get('foo.bar')).to.equal('baz');
       });
 
     });
@@ -128,6 +134,12 @@ module.exports = function(exempel) {
         var model = new Model().set('foo', 'bar');
 
         chai.expect(model.attributes).to.have.property('foo', 'bar');
+      });
+
+      it('should set nested attribute property key to value', function() {
+        var model = new Model({ foo: {} }).set('foo.bar', 'baz');
+
+        chai.expect(model.attributes.foo).to.have.property('bar', 'baz');
       });
 
       it('should set attribute to properties in object', function() {
